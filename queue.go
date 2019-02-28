@@ -3,9 +3,9 @@ package queue
 type MessageType int32
 
 type Message struct {
-	Data interface{}        //消息内容
-	Fn   func(msg *Message) //消息处理函数
-	Type MessageType        //消息类型
+	Data interface{}        // 消息内容
+	Fn   func(msg *Message) // 消息处理函数
+	Type MessageType        // 消息类型
 }
 
 type IQueue interface {

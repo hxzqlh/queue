@@ -19,27 +19,26 @@ func NewTradeServer() *TradeServer {
 	s := &TradeServer{}
 	s.sw = NewQueueSwitch()
 	s.q = NewQueue()
-
-	s.sw.SetRoute(MessageType_MsgA, s.q)
-	s.sw.SetRoute(MessageType_MsgB, s.q)
-
-	s.aAction()
-	s.bAction()
-
+	s.RegistMsgA()
+	s.RegistMsgB()
 	return s
 }
 
-func (s *TradeServer) aAction() {
+func (s *TradeServer) RegistMsgA() {
+	s.sw.SetRoute(MessageType_MsgA, s.q)
 	s.sw.SetHandle(MessageType_MsgA, func(msg *Message) (*Message, error) {
-		fmt.Println("Process A type msg:", msg)
+		fmt.Println("A type msg:", msg)
+		// some logic...
 		msg.Data = "Hello, MsgA"
 		return msg, nil
 	})
 }
 
-func (s *TradeServer) bAction() {
+func (s *TradeServer) RegistMsgB() {
+	s.sw.SetRoute(MessageType_MsgB, s.q)
 	s.sw.SetHandle(MessageType_MsgB, func(msg *Message) (*Message, error) {
-		fmt.Println("Process B type msg:", msg)
+		fmt.Println("B type msg:", msg)
+		// some logic...
 		msg.Data = "Hello, MsgB"
 		return msg, nil
 	})

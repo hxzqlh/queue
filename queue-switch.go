@@ -44,18 +44,7 @@ func (s *QueueSwitch) NewMessage(data interface{}, fn MessageCB, msgType Message
 	return &msg, nil
 }
 
-func (s *QueueSwitch) createCB(msgType MessageType, fn MessageCB) func(*Message) {
-	return func(msg *Message) {
-		// 执行自己的 handle
-		msg, err := s.handles[msgType](msg)
-		if fn != nil {
-			// 回调处理结果
-			fn(msg, err)
-		}
-	}
-}
-
-// 消息路由，根据消息类型分发到对应类型的队列中
+// 设置消息路由，根据消息类型分发到对应类型的队列中
 func (s *QueueSwitch) SetRoute(msgType MessageType, q IQueue) {
 	if msgType >= MessageType_MsgCount {
 		panic("err msg type")
@@ -81,4 +70,15 @@ func (s *QueueSwitch) Send(msg *Message) error {
 	}
 	q.Send(msg)
 	return nil
+}
+
+func (s *QueueSwitch) createCB(msgType MessageType, fn MessageCB) func(*Message) {
+	return func(msg *Message) {
+		// 执行自己的 handle
+		msg, err := s.handles[msgType](msg)
+		if fn != nil {
+			// 回调处理结果
+			fn(msg, err)
+		}
+	}
 }
