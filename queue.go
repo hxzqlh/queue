@@ -10,18 +10,24 @@ type Message struct {
 
 type IQueue interface {
 	Send(msg *Message)
+	GetLevel() int
 }
 
 type Queue struct {
-	ch chan *Message
+	ch    chan *Message
+	level int // 队列优先级，值越小，优先级越高
 }
 
 func (q *Queue) Send(msg *Message) {
 	q.ch <- msg
 }
 
-func NewQueue() *Queue {
-	q := &Queue{make(chan *Message, 2048)}
+func (q *Queue) GetLevel() int {
+	return q.level
+}
+
+func NewQueue(level int) *Queue {
+	q := &Queue{make(chan *Message, 2048), level}
 	go func() {
 		var msgs [1024]*Message
 		for {
